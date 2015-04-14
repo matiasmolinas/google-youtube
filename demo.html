@@ -11,61 +11,64 @@
     <style>
       body {
         font-family: sans-serif;
-        background: rgba(204, 204, 204, 0.31);
+        background: #69ae41;
       }
 
       div {
         margin-bottom: 1em;
       }
+        
+      #googleYouTube {
+        position: absolute;
+        top: 0;
+        right: 0;
+        left: 0;
+        bottom: 64px;
+      }
+        
+      #googleYouTube /deep/ iframe {
+        position: absolute;
+      }
+
+      #playerpage.narrow #googleYouTube {
+        bottom: 128px;
+      }
+        
+      #playercontrols {
+        position: absolute;
+        right: 0;
+        left: 0;
+        bottom: 0;
+        }
     </style>
   </head>
 
   <body unresolved>
     <template id="page-template" is="auto-binding">
-      <h1><code>&lt;google-youtube&gt;</code> Demo</h1>
+      <div id="playerpage">
+        <google-youtube id="googleYouTube"
+                          playsupported="{{playSupported}}"
+                          videoid="IHALIdvbV0c"
+                          width="100%"
+                          height="100%"
+                          rel="0"
+                          autoplay="1"
+                          chromeless
+                          state="{{state}}"
+                          currenttime="{{currentTime}}"
+                          currenttimeformatted="{{currentTimeFormatted}}"
+                          duration="{{duration}}"
+                          durationformatted="{{durationFormatted}}"
+                          fractionloaded="{{fractionLoaded}}">
+          </google-youtube>
 
-      <h3>Full API Demo</h3>
-      <google-youtube id="googleYouTube"
-                      playsupported="{{playSupported}}"
-                      videoid="mN7IAaRdi_k"
-                      state="{{state}}"
-                      currenttime="{{currentTime}}"
-                      currenttimeformatted="{{currentTimeFormatted}}"
-                      duration="{{duration}}"
-                      durationformatted="{{durationFormatted}}"
-                      fractionloaded="{{fractionLoaded}}">
-      </google-youtube>
+          <div id="playercontrols">
+            <p><progress max="1" value="{{ currentTime / duration }}"></progress></p>
+            <input id="play-video" type="button" value="Play" disabled?="{{ state == 1 || state == 3 || !playSupported}}">
+            <input id="pause-video" type="button" value="Pause" disabled?="{{ state != 1 && state != 3 }}">
+          </div>
+        </div>
 
-      <div>
-        <p>Playback Progress: {{currentTimeFormatted}} / {{durationFormatted}} <progress max="1" value="{{ currentTime / duration }}"></progress></p>
-      </div>
-
-      <div>
-        <input id="play-video" type="button" value="Play" disabled?="{{ state == 1 || state == 3 || !playSupported}}">
-        <input id="pause-video" type="button" value="Pause" disabled?="{{ state != 1 && state != 3 }}">
-      </div>
-
-      <div>
-        <label for="video-id">Video ID:</label>
-        <input id="video-id" type="text" value="M7lc1UVf-VE">
-        <input id="cue-video" type="button" value="Cue">
-      </div>
-
-      <div>
-        <p>Player Events:</p>
-        <ol>
-          <template repeat="{{event in events}}">
-            <li>State change: {{event}}</li>
-          </template>
-        </ol>
-      </div>
-
-      <h3>Custom Thumbnail Demo</h3>
-      <google-youtube videoid="yRbOSdAe_JU"
-                      width="853px"
-                      height="480px"
-                      thumbnail="//www.polymer-project.org/images/logos/p-logo.svg">
-      </google-youtube>
     </template>
 
     <script>
@@ -82,18 +85,7 @@
         document.getElementById('pause-video').addEventListener('click', function() {
           googleYouTube.pause();
         });
-
-        document.getElementById('cue-video').addEventListener('click', function() {
-          googleYouTube.videoid = document.getElementById('video-id').value;
-        });
-
-        googleYouTube.addEventListener('google-youtube-state-change', function(e) {
-          pageTemplate.events.push(e.detail.data);
-        });
-
-        googleYouTube.addEventListener('google-youtube-error', function(e) {
-          console.error('YouTube playback error', e.detail);
-        });
+          
       });
     </script>
   </body>
